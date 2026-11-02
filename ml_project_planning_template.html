@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ML Project Planning Template</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #F4F6F7;
+    --paper-card: #FFFFFF;
+    --line: #C7D2D9;
+    --line-soft: #DCE4E8;
+    --grid-line: rgba(31,86,115,0.05);
+    --ink: #16232E;
+    --ink-soft: #4C5B68;
+    --blueprint: #1F5673;
+    --blueprint-2: #2E7A9E;
+    --blueprint-tint: #E7F1F5;
+    --annotation: #B23B24;
+    --annotation-tint: #FBEAE6;
+    --radius: 3px;
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin:0;
+    background:
+      linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0/100% 36px,
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0/36px 100%,
+      var(--paper);
+    background-attachment: local;
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    line-height: 1.5;
+    padding-bottom: 80px;
+  }
+
+  h1,h2,h3{ font-family:'Space Grotesk', sans-serif; margin:0; }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--blueprint);
+    font-weight: 600;
+  }
+
+  /* ---------- Sticky progress nav ---------- */
+  .progress-nav{
+    position: sticky;
+    top:0;
+    z-index: 50;
+    background: rgba(244,246,247,0.95);
+    backdrop-filter: blur(4px);
+    border-bottom: 1px solid var(--line);
+    padding: 10px 24px;
+    display:flex;
+    align-items:center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .progress-nav .brand{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+    margin-right: auto;
+  }
+  .progress-step{
+    display:flex; align-items:center; gap:7px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    text-decoration:none;
+    padding: 5px 10px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--paper-card);
+    cursor:pointer;
+  }
+  .progress-step .dot{
+    width:8px; height:8px; border-radius:50%;
+    border: 1.5px solid var(--blueprint-2);
+    flex-shrink:0;
+  }
+  .progress-step.done{ border-color: var(--blueprint); color: var(--blueprint); }
+  .progress-step.done .dot{ background: var(--blueprint); }
+
+  .print-btn{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 12px;
+    background: var(--blueprint);
+    color:#fff;
+    border:none;
+    padding: 7px 14px;
+    border-radius: var(--radius);
+    cursor:pointer;
+  }
+  .print-btn:hover{ background: var(--blueprint-2); }
+  .print-btn.secondary{ background: var(--paper-card); color: var(--blueprint); border: 1px solid var(--blueprint); }
+  .print-btn.secondary:hover{ background: var(--blueprint-tint); }
+
+  /* ---------- Cover ---------- */
+  .cover{
+    max-width: 980px;
+    margin: 40px auto 10px;
+    padding: 0 24px;
+  }
+  .cover .frame{
+    position:relative;
+    border: 1.5px solid var(--ink);
+    background: var(--paper-card);
+    padding: 40px 44px;
+  }
+  .corner{
+    position:absolute; width:14px; height:14px;
+    border-color: var(--blueprint); border-style: solid;
+  }
+  .corner.tl{ top:-1.5px; left:-1.5px; border-width: 2px 0 0 2px; }
+  .corner.tr{ top:-1.5px; right:-1.5px; border-width: 2px 2px 0 0; }
+  .corner.bl{ bottom:-1.5px; left:-1.5px; border-width: 0 0 2px 2px; }
+  .corner.br{ bottom:-1.5px; right:-1.5px; border-width: 0 2px 2px 0; }
+
+  .cover h1{ font-size: 30px; margin: 10px 0 6px; }
+  .cover .sub{ color: var(--ink-soft); font-size: 14px; margin-bottom: 26px; }
+
+  .meta-grid{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-top: 10px;
+  }
+  .meta-field label{
+    display:block; font-family:'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing:0.08em; text-transform:uppercase;
+    color: var(--ink-soft); margin-bottom: 5px;
+  }
+  .meta-field [contenteditable]{
+    border-bottom: 1px solid var(--line);
+    padding: 4px 2px;
+    font-size: 14px;
+    min-height: 22px;
+  }
+  .meta-field [contenteditable]:focus{ outline:none; border-color: var(--blueprint); }
+  .meta-field [contenteditable]:empty:before{
+    content: attr(data-ph); color:#9BA8B0;
+  }
+
+  /* ---------- Section shell ---------- */
+  .section{
+    max-width: 980px;
+    margin: 56px auto 0;
+    padding: 0 24px;
+    scroll-margin-top: 70px;
+  }
+  .section-head{
+    display:flex; align-items:baseline; gap: 14px;
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: 12px;
+    margin-bottom: 22px;
+  }
+  .section-head .num{
+    font-family:'Space Grotesk', sans-serif;
+    font-size: 13px; font-weight:600;
+    color: var(--paper-card);
+    background: var(--blueprint);
+    padding: 3px 9px;
+    border-radius: var(--radius);
+  }
+  .section-head h2{ font-size: 22px; }
+  .section-head .tag{
+    margin-left:auto;
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+  }
+  .section-intro{
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    max-width: 760px;
+    margin-bottom: 26px;
+  }
+
+  /* ---------- Cards general ---------- */
+  .card{
+    position:relative;
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+  }
+  .card::before, .card::after{
+    content:"";
+    position:absolute; width:9px; height:9px;
+    border-color: var(--blueprint-2); border-style:solid;
+  }
+  .card::before{ top:-1px; left:-1px; border-width: 1.5px 0 0 1.5px; }
+  .card::after{ bottom:-1px; right:-1px; border-width: 0 1.5px 1.5px 0; }
+
+  .card .card-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 10.5px; letter-spacing:0.06em; text-transform:uppercase;
+    color: var(--blueprint);
+    font-weight:600;
+    margin-bottom: 4px;
+    display:block;
+  }
+  .card .card-hint{
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+    display:block;
+  }
+  .card [contenteditable]{
+    font-size: 13.5px;
+    min-height: 60px;
+    outline:none;
+  }
+  .card [contenteditable]:empty:before{
+    content: attr(data-ph); color:#9BA8B0;
+  }
+  .required::after{
+    content: "•"; color: var(--annotation); margin-left:5px;
+    font-size: 16px; line-height:0;
+  }
+
+  /* ---------- ML Canvas grid ---------- */
+  .canvas-grid{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-areas:
+      "value value task task"
+      "data feat decision decision"
+      "predict build impact impact"
+      "eval eval eval eval"
+      "risk risk risk risk";
+    gap: 10px;
+  }
+  .canvas-grid .card{ min-height: 130px; }
+  .area-value{ grid-area: value; background: var(--blueprint-tint); }
+  .area-task{ grid-area: task; }
+  .area-data{ grid-area: data; }
+  .area-feat{ grid-area: feat; }
+  .area-decision{ grid-area: decision; }
+  .area-predict{ grid-area: predict; }
+  .area-build{ grid-area: build; }
+  .area-impact{ grid-area: impact; }
+  .area-eval{ grid-area: eval; min-height: 90px; }
+  .area-risk{ grid-area: risk; min-height: 80px; background: var(--annotation-tint); }
+  .area-risk .card-label{ color: var(--annotation); }
+
+  @media (max-width: 720px){
+    .canvas-grid{ grid-template-columns: 1fr 1fr; grid-template-areas:
+      "value value" "task task" "data feat" "decision decision"
+      "predict build" "impact impact" "eval eval" "risk risk"; }
+    .meta-grid{ grid-template-columns: 1fr 1fr; }
+  }
+
+  /* ---------- Charter blocks ---------- */
+  .charter-block{ margin-bottom: 22px; }
+  .charter-block .card{ min-height:auto; }
+  .two-col{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  table{ width:100%; border-collapse: collapse; font-size: 13px; }
+  thead th{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 10.5px; text-transform:uppercase; letter-spacing:0.05em;
+    background: var(--blueprint); color:#fff;
+    text-align:left; padding: 8px 10px;
+  }
+  tbody td{
+    border: 1px solid var(--line);
+    padding: 8px 10px;
+    vertical-align: top;
+  }
+  tbody td[contenteditable]:empty:before{ content: attr(data-ph); color:#9BA8B0; }
+  .add-row{
+    margin-top:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    background:none; border: 1px dashed var(--line-soft); color: var(--blueprint);
+    padding: 6px 10px; border-radius: var(--radius); cursor:pointer;
+  }
+  .add-row:hover{ border-color: var(--blueprint); }
+
+  .risk-table thead th:nth-child(3){ background: var(--annotation); }
+
+  .table-wrap{
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 14px;
+  }
+
+  /* ---------- CRISP-DM roadmap ---------- */
+  .roadmap{
+    display:flex; flex-direction: column; gap: 0;
+  }
+  .phase{
+    display:grid;
+    grid-template-columns: 46px 1fr;
+    gap: 16px;
+    position: relative;
+    padding-bottom: 26px;
+  }
+  .phase:not(:last-child)::before{
+    content:"";
+    position:absolute;
+    left: 22px; top: 46px; bottom: -4px;
+    width: 0;
+    border-left: 2px dashed var(--line);
+  }
+  .phase-num{
+    width:44px; height:44px;
+    border-radius:50%;
+    border: 2px solid var(--blueprint);
+    background: var(--paper-card);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:16px;
+    color: var(--blueprint);
+    flex-shrink:0;
+    z-index:1;
+  }
+  .phase.checked .phase-num{ background: var(--blueprint); color:#fff; }
+  .phase-body{
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 14px 18px 16px;
+  }
+  .phase-top{ display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap; }
+  .phase-top h3{ font-size:16px; }
+  .phase-check{
+    margin-left:auto;
+    display:flex; align-items:center; gap:6px;
+    font-family:'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-soft);
+    cursor:pointer; user-select:none;
+  }
+  .phase-check input{ accent-color: var(--blueprint); width:14px; height:14px; }
+
+  .phase-cols{
+    display:grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 16px;
+  }
+  .phase-cols .col-title{
+    font-family:'IBM Plex Mono', monospace; font-size: 10px; text-transform:uppercase;
+    letter-spacing:0.06em; color: var(--blueprint); margin-bottom:6px; display:block;
+  }
+  .checklist label{
+    display:flex; gap:7px; align-items:flex-start; font-size:12.5px; margin-bottom:5px;
+    color: var(--ink-soft);
+  }
+  .checklist input{ margin-top:3px; accent-color: var(--blueprint-2); }
+  .deliverable-tag{
+    display:inline-block; font-family:'IBM Plex Mono', monospace; font-size: 10px;
+    background: var(--blueprint-tint); color: var(--blueprint); padding: 2px 6px;
+    border-radius: var(--radius); margin: 0 4px 4px 0;
+  }
+  .dod{
+    font-size: 12px; color: var(--ink-soft); font-style: italic;
+    border-left: 2px solid var(--annotation); padding-left:8px; margin-top:6px;
+  }
+
+  @media (max-width: 780px){
+    .phase-cols{ grid-template-columns: 1fr; }
+    .two-col{ grid-template-columns: 1fr; }
+  }
+
+  footer{
+    max-width:980px; margin: 60px auto 0; padding: 20px 24px;
+    font-family:'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-soft);
+    border-top: 1px solid var(--line);
+  }
+
+  /* ---------- Print ---------- */
+  @media print{
+    body{ background: #fff; padding-bottom:0; }
+    .progress-nav{ display:none; }
+    .section{ margin-top: 24px; }
+    .card::before,.card::after{ display:none; }
+    .phase-check{ display:none; }
+    a{ text-decoration:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-nav">
+  <span class="brand">ML PROJECT PLANNING — v1.0</span>
+  <a class="progress-step" data-target="canvas" onclick="scrollToSection('canvas')"><span class="dot"></span>1. ML Canvas</a>
+  <a class="progress-step" data-target="charter" onclick="scrollToSection('charter')"><span class="dot"></span>2. Project Charter</a>
+  <a class="progress-step" data-target="roadmap" onclick="scrollToSection('roadmap')"><span class="dot"></span>3. Roadmap CRISP-DM</a>
+  <button class="print-btn secondary" onclick="saveAsHTML()">Simpan sebagai HTML</button>
+  <button class="print-btn" onclick="window.print()">Print / Export PDF</button>
+</div>
+
+<!-- ================= COVER ================= -->
+<div class="cover">
+  <div class="frame">
+    <div class="corner tl"></div><div class="corner tr"></div>
+    <div class="corner bl"></div><div class="corner br"></div>
+    <span class="eyebrow">Data Science / Machine Learning</span>
+    <h1>Project Planning Template</h1>
+    <div class="sub">ML Canvas → Project Charter → Roadmap CRISP-DM. Isi langsung di setiap kolom bertanda titik merah.</div>
+    <div class="meta-grid">
+      <div class="meta-field"><label>Nama Project</label><div contenteditable data-ph="cth. Prediksi Permintaan Stok Bulanan"></div></div>
+      <div class="meta-field"><label>Anggota Tim</label><div contenteditable data-ph="Nama 1, Nama 2"></div></div>
+      <div class="meta-field"><label>Cohort / Kelas</label><div contenteditable data-ph="cth. JCDSBSD 33"></div></div>
+      <div class="meta-field"><label>Tanggal</label><div contenteditable data-ph="DD/MM/YYYY"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= SECTION 1: ML CANVAS ================= -->
+<div class="section" id="canvas">
+  <div class="section-head">
+    <span class="num">01</span>
+    <h2>ML Canvas</h2>
+    <span class="tag">Fase: Ideation — living document, boleh direvisi</span>
+  </div>
+  <div class="section-intro">
+    Validasi ide sebelum mulai coding. Isi tiap kotak secara singkat (bullet point, bukan paragraf panjang). Kalau ada kotak yang sulit dijawab, itu tandanya ide project perlu dipertajam dulu.
+  </div>
+
+  <div class="canvas-grid">
+    <div class="card area-value">
+      <span class="card-label required">Value Proposition</span>
+      <span class="card-hint">Untuk siapa? Masalah apa? Kenapa harus ML, bukan aturan manual?</span>
+      <div contenteditable data-ph="Tulis di sini..."></div>
+    </div>
+    <div class="card area-task">
+      <span class="card-label required">Prediction Task</span>
+      <span class="card-hint">Input → Output. Jenis task: klasifikasi / regresi / clustering?</span>
+      <div contenteditable data-ph="Tulis di sini..."></div>
+    </div>
+    <div class="card area-data">
+      <span class="card-label required">Data Sources</span>
+      <span class="card-hint">Sumber data, cara akses, siapa pemiliknya</span>
+      <div contenteditable data-ph="Tulis di sini..."></div>
+    </div>
+    <div class="card area-feat">
+      <span class="card-label required">Features</span>
+      <span class="card-hint">Fitur yang tersedia saat prediksi dilakukan (bukan saat training)</span>
+      <div contenteditable data-ph="Tulis di sini..."></div>
+    </div>
+    <div class="card area-decision">
+      <span class="card-label required">Decisions</span>
+      <span class="card-hint">Bagaimana hasil prediksi dipakai untuk mengambil keputusan?</span>
+      <div contenteditable data-ph="Tulis di sini..."></div>
+    </div>
+    <div class="card area-predict">
+      <span class="card-label">Making Predictions</span>
+      <span class="card-hint">Real-time atau batch? Seberapa sering?</span>
+      <div contenteditable data-ph="Tulis di sini..."></div>
+    </div>
+    <div class="card area-build">
+      <span class="card-label">Building Models</span>
+      <span class="card-hint">Kapan model di-retrain? Siapa penanggung jawab?</span>
+      <div contenteditable data-ph="Tulis di sini..."></div>
+    </div>
+    <div class="card area-impact">
+      <span class="card-label">Impact Simulation</span>
+      <span class="card-hint">Bagaimana mengukur dampak nyata model (bukan cuma metrik teknis)?</span>
+      <div contenteditable data-ph="Tulis di sini..."></div>
+    </div>
+    <div class="card area-eval">
+      <span class="card-label required">Offline Evaluation</span>
+      <span class="card-hint">Metrik yang dipakai untuk validasi sebelum "dianggap selesai", sesuai jenis task (mis. F1/recall untuk klasifikasi, RMSE untuk regresi, silhouette score untuk clustering) + baseline pembanding</span>
+      <div contenteditable data-ph="Tulis di sini..."></div>
+    </div>
+    <div class="card area-risk">
+      <span class="card-label required">Risk &amp; Uncertainty</span>
+      <span class="card-hint">Apa yang terjadi kalau prediksi model meleset? Kesalahan jenis apa yang paling mahal/berbahaya?</span>
+      <div contenteditable data-ph="Tulis di sini..."></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= SECTION 2: PROJECT CHARTER ================= -->
+<div class="section" id="charter">
+  <div class="section-head">
+    <span class="num">02</span>
+    <h2>Project Charter</h2>
+    <span class="tag">Fase: Business Understanding — versi ringkas TDSP, mengunci hasil ML Canvas</span>
+  </div>
+  <div class="section-intro">
+    Setelah ide di ML Canvas cukup matang, "kunci" jadi komitmen formal di sini. Dokumen ini yang dipakai sebagai acuan sepanjang project berjalan.
+  </div>
+
+  <div class="charter-block two-col">
+    <div class="card">
+      <span class="card-label required">Business Background</span>
+      <span class="card-hint">Konteks masalah bisnis, kenapa ini penting sekarang</span>
+      <div contenteditable data-ph="Tulis di sini..."></div>
+    </div>
+    <div class="card">
+      <span class="card-label required">Business Objective</span>
+      <span class="card-hint">Tujuan dari sudut pandang bisnis (bukan metrik teknis)</span>
+      <div contenteditable data-ph="cth. Mengurangi kelebihan/kekurangan stok gudang"></div>
+    </div>
+  </div>
+
+  <div class="charter-block">
+    <div class="card">
+      <span class="card-label required">ML Objective &amp; Success Criteria (SMART)</span>
+      <span class="card-hint">Target metrik kuantitatif + deadline, sesuai jenis task. Pisahkan jelas dari business objective di atas.</span>
+      <div contenteditable data-ph="cth. Model mencapai target metrik evaluasi tertentu (sesuai jenis task) dalam 3 minggu"></div>
+    </div>
+  </div>
+
+  <div class="charter-block two-col">
+    <div class="card">
+      <span class="card-label required">Scope — In</span>
+      <div contenteditable data-ph="Yang dikerjakan dalam project ini..."></div>
+    </div>
+    <div class="card">
+      <span class="card-label">Scope — Out / Asumsi</span>
+      <div contenteditable data-ph="Yang tidak dikerjakan + asumsi yang diambil..."></div>
+    </div>
+  </div>
+
+  <div class="charter-block">
+    <span class="card-label required" style="margin-bottom:8px;">Timeline per Fase CRISP-DM</span>
+    <div class="table-wrap">
+    <table id="timeline-table">
+      <thead><tr><th style="width:22%">Fase</th><th style="width:33%">Deliverable</th><th style="width:20%">Estimasi Waktu</th><th style="width:25%">PIC</th></tr></thead>
+      <tbody>
+        <tr><td contenteditable data-ph="Business Understanding"></td><td contenteditable data-ph="Project Charter"></td><td contenteditable data-ph="cth. 2 hari"></td><td contenteditable data-ph="Nama"></td></tr>
+        <tr><td contenteditable data-ph="Data Understanding"></td><td contenteditable data-ph="EDA report"></td><td contenteditable data-ph=""></td><td contenteditable data-ph=""></td></tr>
+        <tr><td contenteditable data-ph="Data Preparation"></td><td contenteditable data-ph="Cleaned dataset + pipeline"></td><td contenteditable data-ph=""></td><td contenteditable data-ph=""></td></tr>
+        <tr><td contenteditable data-ph="Modeling"></td><td contenteditable data-ph="Model comparison report"></td><td contenteditable data-ph=""></td><td contenteditable data-ph=""></td></tr>
+        <tr><td contenteditable data-ph="Evaluation"></td><td contenteditable data-ph="Evaluation report vs success criteria"></td><td contenteditable data-ph=""></td><td contenteditable data-ph=""></td></tr>
+        <tr><td contenteditable data-ph="Deployment / Reporting"></td><td contenteditable data-ph="Dashboard + presentasi"></td><td contenteditable data-ph=""></td><td contenteditable data-ph=""></td></tr>
+      </tbody>
+    </table>
+    <button class="add-row" onclick="addRow('timeline-table', 4)">+ Tambah baris</button>
+    </div>
+  </div>
+
+  <div class="charter-block">
+    <span class="card-label required" style="margin-bottom:8px;">Risk &amp; Mitigation</span>
+    <div class="table-wrap">
+    <table id="risk-table" class="risk-table">
+      <thead><tr><th style="width:20%">Jenis</th><th style="width:35%">Risiko</th><th style="width:45%">Mitigasi</th></tr></thead>
+      <tbody>
+        <tr><td contenteditable data-ph="Teknis"></td><td contenteditable data-ph="cth. Kualitas data belum konsisten"></td><td contenteditable data-ph="cth. Tambahkan tahap validasi data di awal"></td></tr>
+        <tr><td contenteditable data-ph="Non-teknis"></td><td contenteditable data-ph="cth. Keterbatasan waktu"></td><td contenteditable data-ph="cth. Prioritaskan MVP dulu"></td></tr>
+      </tbody>
+    </table>
+    <button class="add-row" onclick="addRow('risk-table', 3)">+ Tambah baris</button>
+    </div>
+  </div>
+
+  <div class="charter-block">
+    <div class="card">
+      <span class="card-label">Tools &amp; Tech Stack</span>
+      <div contenteditable data-ph="cth. Python 3.11, scikit-learn, pandas, Google Colab, Git"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= SECTION 3: CRISP-DM ROADMAP ================= -->
+<div class="section" id="roadmap">
+  <div class="section-head">
+    <span class="num">03</span>
+    <h2>Roadmap CRISP-DM</h2>
+    <span class="tag">Tulang punggung proses — checklist per fase</span>
+  </div>
+  <div class="section-intro">
+    Centang setiap fase saat sudah selesai. Setiap fase punya pertanyaan kunci yang harus terjawab dan deliverable yang harus dihasilkan sebelum lanjut ke fase berikutnya.
+  </div>
+
+  <div class="roadmap" id="roadmap-list">
+
+    <div class="phase" data-idx="0">
+      <div class="phase-num">1</div>
+      <div class="phase-body">
+        <div class="phase-top">
+          <h3>Business Understanding</h3>
+          <label class="phase-check"><input type="checkbox" onchange="togglePhase(this)"> Selesai</label>
+        </div>
+        <div class="phase-cols">
+          <div>
+            <span class="col-title">Pertanyaan Kunci</span>
+            <div class="checklist">
+              <label><input type="checkbox"> Apa masalah bisnisnya, dan siapa yang terdampak?</label>
+              <label><input type="checkbox"> Apa objective ML-nya, terpisah dari objective bisnis?</label>
+              <label><input type="checkbox"> Bagaimana kriteria "berhasil" diukur?</label>
+            </div>
+          </div>
+          <div>
+            <span class="col-title">Deliverable</span>
+            <span class="deliverable-tag">TDSP: Project Charter</span>
+            <span class="deliverable-tag">ML Canvas</span>
+          </div>
+          <div>
+            <span class="col-title">Definition of Done</span>
+            <div class="dod">Project Charter disetujui, target metrik & timeline jelas.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase" data-idx="1">
+      <div class="phase-num">2</div>
+      <div class="phase-body">
+        <div class="phase-top">
+          <h3>Data Understanding</h3>
+          <label class="phase-check"><input type="checkbox" onchange="togglePhase(this)"> Selesai</label>
+        </div>
+        <div class="phase-cols">
+          <div>
+            <span class="col-title">Pertanyaan Kunci</span>
+            <div class="checklist">
+              <label><input type="checkbox"> Berapa jumlah baris/kolom, dan rentang waktunya?</label>
+              <label><input type="checkbox"> Masalah apa yang sudah terlihat (missing value, imbalance, outlier)?</label>
+              <label><input type="checkbox"> Apakah distribusi target/fitur masuk akal secara bisnis?</label>
+            </div>
+          </div>
+          <div>
+            <span class="col-title">Deliverable</span>
+            <span class="deliverable-tag">TDSP: Data Report</span>
+            <span class="deliverable-tag">EDA notebook</span>
+          </div>
+          <div>
+            <span class="col-title">Definition of Done</span>
+            <div class="dod">EDA report merangkum kualitas data & insight awal.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase" data-idx="2">
+      <div class="phase-num">3</div>
+      <div class="phase-body">
+        <div class="phase-top">
+          <h3>Data Preparation</h3>
+          <label class="phase-check"><input type="checkbox" onchange="togglePhase(this)"> Selesai</label>
+        </div>
+        <div class="phase-cols">
+          <div>
+            <span class="col-title">Pertanyaan Kunci</span>
+            <div class="checklist">
+              <label><input type="checkbox"> Bagaimana missing value & outlier ditangani, dan kenapa?</label>
+              <label><input type="checkbox"> Fitur baru apa yang dibuat (feature engineering)?</label>
+              <label><input type="checkbox"> Apakah pipeline bisa direplikasi tanpa data leakage?</label>
+            </div>
+          </div>
+          <div>
+            <span class="col-title">Deliverable</span>
+            <span class="deliverable-tag">Cleaned dataset</span>
+            <span class="deliverable-tag">Preprocessing pipeline</span>
+          </div>
+          <div>
+            <span class="col-title">Definition of Done</span>
+            <div class="dod">Pipeline preprocessing berjalan konsisten di train/test.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase" data-idx="3">
+      <div class="phase-num">4</div>
+      <div class="phase-body">
+        <div class="phase-top">
+          <h3>Modeling</h3>
+          <label class="phase-check"><input type="checkbox" onchange="togglePhase(this)"> Selesai</label>
+        </div>
+        <div class="phase-cols">
+          <div>
+            <span class="col-title">Pertanyaan Kunci</span>
+            <div class="checklist">
+              <label><input type="checkbox"> Algoritma apa saja yang dibandingkan, dan kenapa?</label>
+              <label><input type="checkbox"> Bagaimana validasi dilakukan (cross-validation, split)?</label>
+              <label><input type="checkbox"> Apakah ada tanda overfitting/underfitting?</label>
+            </div>
+          </div>
+          <div>
+            <span class="col-title">Deliverable</span>
+            <span class="deliverable-tag">TDSP: Model Report</span>
+            <span class="deliverable-tag">Model comparison</span>
+          </div>
+          <div>
+            <span class="col-title">Definition of Done</span>
+            <div class="dod">Model terbaik terpilih dengan justifikasi yang jelas.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase" data-idx="4">
+      <div class="phase-num">5</div>
+      <div class="phase-body">
+        <div class="phase-top">
+          <h3>Evaluation</h3>
+          <label class="phase-check"><input type="checkbox" onchange="togglePhase(this)"> Selesai</label>
+        </div>
+        <div class="phase-cols">
+          <div>
+            <span class="col-title">Pertanyaan Kunci</span>
+            <div class="checklist">
+              <label><input type="checkbox"> Apakah hasil model memenuhi Success Criteria di Charter?</label>
+              <label><input type="checkbox"> Bagaimana performa dibanding baseline?</label>
+              <label><input type="checkbox"> Apakah ada bias/error pattern yang perlu dicatat?</label>
+            </div>
+          </div>
+          <div>
+            <span class="col-title">Deliverable</span>
+            <span class="deliverable-tag">Evaluation report</span>
+          </div>
+          <div>
+            <span class="col-title">Definition of Done</span>
+            <div class="dod">Hasil evaluasi dibandingkan eksplisit dengan target di Charter.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase" data-idx="5">
+      <div class="phase-num">6</div>
+      <div class="phase-body">
+        <div class="phase-top">
+          <h3>Deployment / Reporting</h3>
+          <label class="phase-check"><input type="checkbox" onchange="togglePhase(this)"> Selesai</label>
+        </div>
+        <div class="phase-cols">
+          <div>
+            <span class="col-title">Pertanyaan Kunci</span>
+            <div class="checklist">
+              <label><input type="checkbox"> Bagaimana hasil dikomunikasikan ke stakeholder?</label>
+              <label><input type="checkbox"> Apa batasan/limitasi model yang perlu diketahui pengguna?</label>
+              <label><input type="checkbox"> Apa langkah selanjutnya jika model akan dipakai lebih lanjut?</label>
+            </div>
+          </div>
+          <div>
+            <span class="col-title">Deliverable</span>
+            <span class="deliverable-tag">TDSP: Exit Report</span>
+            <span class="deliverable-tag">Dashboard / Presentasi</span>
+          </div>
+          <div>
+            <span class="col-title">Definition of Done</span>
+            <div class="dod">Ringkasan akhir tersampaikan lengkap dengan rekomendasi.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  ML Canvas — Louis Dorard · CRISP-DM · TDSP — Microsoft Team Data Science Process. Diringkas untuk kebutuhan project planning capstone.
+</footer>
+
+<script>
+  function scrollToSection(id){
+    document.getElementById(id).scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function togglePhase(checkbox){
+    const phase = checkbox.closest('.phase');
+    phase.classList.toggle('checked', checkbox.checked);
+    updateProgressNav();
+  }
+
+  function updateProgressNav(){
+    const phases = document.querySelectorAll('.phase');
+    const doneCount = document.querySelectorAll('.phase.checked').length;
+    const roadmapStep = document.querySelector('.progress-step[data-target="roadmap"]');
+    if(doneCount === phases.length && phases.length > 0){
+      roadmapStep.classList.add('done');
+    } else {
+      roadmapStep.classList.remove('done');
+    }
+  }
+
+  function saveAsHTML(){
+    const clone = document.documentElement.cloneNode(true);
+
+    // sync checkbox "checked" state into the clone (checked is a property, not reflected in outerHTML by default)
+    const liveCheckboxes = document.querySelectorAll('input[type="checkbox"]');
+    const cloneCheckboxes = clone.querySelectorAll('input[type="checkbox"]');
+    liveCheckboxes.forEach((cb, i) => {
+      if(cb.checked){ cloneCheckboxes[i].setAttribute('checked','checked'); }
+      else { cloneCheckboxes[i].removeAttribute('checked'); }
+    });
+
+    // sync phase.checked class (visual state) into the clone
+    const livePhases = document.querySelectorAll('.phase');
+    const clonePhases = clone.querySelectorAll('.phase');
+    livePhases.forEach((p, i) => {
+      clonePhases[i].className = p.className;
+    });
+
+    const html = '<!DOCTYPE html>\n' + clone.outerHTML;
+    const blob = new Blob([html], {type: 'text/html'});
+    const url = URL.createObjectURL(blob);
+
+    // build filename from project name field if filled
+    const nameField = document.querySelector('.meta-field [contenteditable]');
+    let baseName = (nameField && nameField.innerText.trim()) ? nameField.innerText.trim() : 'ml_project_planning';
+    baseName = baseName.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = baseName + '_isi.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function addRow(tableId, colCount){
+    const tbody = document.getElementById(tableId).querySelector('tbody');
+    const tr = document.createElement('tr');
+    for(let i=0;i<colCount;i++){
+      const td = document.createElement('td');
+      td.setAttribute('contenteditable','true');
+      td.setAttribute('data-ph','');
+      tr.appendChild(td);
+    }
+    tbody.appendChild(tr);
+  }
+
+  // mark ML Canvas / Charter steps done when all required fields in that section have content
+  function checkSectionFilled(sectionId, navTarget){
+    const section = document.getElementById(sectionId);
+    const required = section.querySelectorAll('[contenteditable]');
+    let filled = 0;
+    required.forEach(el => { if(el.innerText.trim().length > 0) filled++; });
+    const step = document.querySelector('.progress-step[data-target="'+navTarget+'"]');
+    if(required.length > 0 && filled >= Math.ceil(required.length*0.6)){
+      step.classList.add('done');
+    } else {
+      step.classList.remove('done');
+    }
+  }
+
+  document.addEventListener('input', function(e){
+    if(e.target.closest('#canvas')) checkSectionFilled('canvas','canvas');
+    if(e.target.closest('#charter')) checkSectionFilled('charter','charter');
+  });
+</script>
+
+</body>
+</html>
