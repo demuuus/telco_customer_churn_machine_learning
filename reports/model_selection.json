@@ -1,0 +1,58 @@
+{
+  "selected_model": "Logistic Regression",
+  "selected_slug": "01_logistic_regression",
+  "final_hyperparameters": {
+    "C": 1,
+    "l1_ratio": 0.0
+  },
+  "threshold": 0.27,
+  "threshold_rule": "minimum expected cost on nested out-of-fold training predictions",
+  "cost_assumptions": {
+    "horizon_months": 12,
+    "retention_success_rate": 0.3,
+    "offer_cost_months": 1.0
+  },
+  "preprocessing": {
+    "contract": "onehot",
+    "addons": "binary",
+    "tenure": "log"
+  },
+  "class_imbalance_strategy": "none (unweighted training; imbalance handled by the threshold)",
+  "selection_rule": "most interpretable model unless the best mean nested PR-AUC exceeds it by > 0.02 in >= 4 of 5 outer folds",
+  "nested_cv_metrics": {
+    "PR-AUC": {
+      "mean": 0.6661336783376375,
+      "std": 0.027306837943072145
+    },
+    "ROC-AUC": {
+      "mean": 0.8460936233764631,
+      "std": 0.014820751625811581
+    },
+    "Brier score": {
+      "mean": 0.13616027578099155,
+      "std": 0.005474184652034077
+    },
+    "Accuracy": {
+      "mean": 0.7986827121653702,
+      "std": 0.004581570379527801
+    },
+    "Precision": {
+      "mean": 0.6643376279709152,
+      "std": 0.034058249571341834
+    },
+    "Recall": {
+      "mean": 0.5089505754908599,
+      "std": 0.05120339007622902
+    },
+    "F1": {
+      "mean": 0.5731865618958233,
+      "std": 0.019811060771389534
+    }
+  },
+  "oof_metrics_at_threshold": {
+    "accuracy": 0.7484787018255578,
+    "precision": 0.5186316432498472,
+    "recall": 0.8062678062678063,
+    "f1": 0.6312267657992565
+  }
+}

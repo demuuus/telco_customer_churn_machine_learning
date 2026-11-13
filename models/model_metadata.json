@@ -1,0 +1,115 @@
+{
+  "model_name": "Logistic Regression",
+  "model_type": "LogisticRegression",
+  "artifact": "models/churn_pipeline.pkl (sklearn FixedThresholdClassifier wrapping Pipeline[preprocess, model])",
+  "training_date": "2026-11-11",
+  "trained_on": "all 4930 labelled customers (training + test) after all decisions were fixed on the training set",
+  "feature_names": [
+    "Dependents",
+    "tenure",
+    "OnlineSecurity",
+    "OnlineBackup",
+    "InternetService",
+    "DeviceProtection",
+    "TechSupport",
+    "Contract",
+    "PaperlessBilling",
+    "MonthlyCharges"
+  ],
+  "encoded_feature_names": [
+    "Dependents_Yes",
+    "PaperlessBilling_Yes",
+    "OnlineSecurity",
+    "OnlineBackup",
+    "DeviceProtection",
+    "TechSupport",
+    "InternetService_Fiber optic",
+    "InternetService_No",
+    "Contract_One year",
+    "Contract_Two year",
+    "tenure_log",
+    "MonthlyCharges"
+  ],
+  "target": {
+    "name": "Churn",
+    "positive_class": "Yes (1)"
+  },
+  "random_state": 34,
+  "threshold": 0.27,
+  "threshold_rule": "minimum expected cost on nested out-of-fold training predictions",
+  "hyperparameters": {
+    "C": 1,
+    "l1_ratio": 0.0
+  },
+  "class_imbalance_strategy": "none (unweighted training; imbalance handled by the threshold)",
+  "preprocessing_steps": [
+    "binary: OneHotEncoder on ['Dependents', 'PaperlessBilling']",
+    "addons: FunctionTransformer on ['OnlineSecurity', 'OnlineBackup', 'DeviceProtection', 'TechSupport']",
+    "internet: OneHotEncoder on ['InternetService']",
+    "contract: OneHotEncoder on ['Contract']",
+    "tenure_log: Pipeline on ['tenure']",
+    "numeric: StandardScaler on ['MonthlyCharges']"
+  ],
+  "cross_validation_metrics_training": {
+    "PR-AUC": {
+      "mean": 0.6661336783376375,
+      "std": 0.027306837943072145
+    },
+    "ROC-AUC": {
+      "mean": 0.8460936233764631,
+      "std": 0.014820751625811581
+    },
+    "Brier score": {
+      "mean": 0.13616027578099155,
+      "std": 0.005474184652034077
+    },
+    "Accuracy": {
+      "mean": 0.7986827121653702,
+      "std": 0.004581570379527801
+    },
+    "Precision": {
+      "mean": 0.6643376279709152,
+      "std": 0.034058249571341834
+    },
+    "Recall": {
+      "mean": 0.5089505754908599,
+      "std": 0.05120339007622902
+    },
+    "F1": {
+      "mean": 0.5731865618958233,
+      "std": 0.019811060771389534
+    }
+  },
+  "internal_holdout_metrics_test": {
+    "Accuracy": 0.7465,
+    "Precision": 0.5157,
+    "Recall": 0.8099,
+    "F1": 0.6302,
+    "ROC-AUC": 0.854,
+    "PR-AUC": 0.6846,
+    "Brier score": 0.1323
+  },
+  "external_validation": "not performed - no independent dataset available",
+  "known_limitations": [
+    "Internal validation only (one stratified split of one dataset); no external validation.",
+    "Preprocessing and feature-set choices (notebook 00) were made with ordinary CV on the same training folds later used as outer folds; a fully nested re-check for Logistic Regression changed mean PR-AUC only marginally (notebook 08, Section 6).",
+    "The test set was scored by earlier pipeline versions before this final evaluation.",
+    "Weak detection of churners on one- and two-year contracts.",
+    "Business cost figures rely on hypothetical assumptions and measure revenue at risk, not profit.",
+    "Requires the project's src/ package to be importable when unpickling."
+  ],
+  "package_versions": {
+    "python": "3.14.5",
+    "numpy": "2.4.6",
+    "pandas": "3.0.5",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.18.1",
+    "joblib": "1.6.0",
+    "matplotlib": "3.10.9",
+    "seaborn": "0.13.2",
+    "imbalanced-learn": "0.14.2",
+    "xgboost": "3.4.1",
+    "lightgbm": "4.7.0"
+  },
+  "security_note": "Pickle files can execute arbitrary code when loaded; load only from this trusted project."
+}

@@ -1,0 +1,76 @@
+{
+  "source": "data/raw/data_telco_customer_churn.csv",
+  "source_sha256": "bde20b565d38ba1aee42e6684c5cc86d4000bd4ac634e80ac65ea7b2351b65ea",
+  "split_function": "src.data_preprocessing.split_train_test",
+  "split": {
+    "method": "sklearn.model_selection.train_test_split",
+    "test_size": 0.2,
+    "stratify": "Churn",
+    "shuffle": true,
+    "random_state": 34
+  },
+  "row_id": "0-based row position in the raw CSV",
+  "row_order": "train/test rows are stored in split_train_test order (needed to reproduce the get_cv folds)",
+  "files": {
+    "cleaned": {
+      "path": "data/processed/data_cleaned.csv",
+      "rows": 4930,
+      "columns": [
+        "row_id",
+        "Dependents",
+        "tenure",
+        "OnlineSecurity",
+        "OnlineBackup",
+        "InternetService",
+        "DeviceProtection",
+        "TechSupport",
+        "Contract",
+        "PaperlessBilling",
+        "MonthlyCharges",
+        "Churn"
+      ],
+      "churn_yes": 1316,
+      "sha256": "67b6b444f38341473517f6725198b867e1263c9f79a0d0db8f1abefba59969ca"
+    },
+    "train": {
+      "path": "data/processed/data_train.csv",
+      "rows": 3944,
+      "columns": [
+        "row_id",
+        "Dependents",
+        "tenure",
+        "OnlineSecurity",
+        "OnlineBackup",
+        "InternetService",
+        "DeviceProtection",
+        "TechSupport",
+        "Contract",
+        "PaperlessBilling",
+        "MonthlyCharges",
+        "Churn"
+      ],
+      "churn_yes": 1053,
+      "sha256": "5949b650439fcd4367ba6d97c6b3488a5bebc9e13a783c76d8243d8285b10dee"
+    },
+    "test": {
+      "path": "data/processed/data_test.csv",
+      "rows": 986,
+      "columns": [
+        "row_id",
+        "Dependents",
+        "tenure",
+        "OnlineSecurity",
+        "OnlineBackup",
+        "InternetService",
+        "DeviceProtection",
+        "TechSupport",
+        "Contract",
+        "PaperlessBilling",
+        "MonthlyCharges",
+        "Churn"
+      ],
+      "churn_yes": 263,
+      "sha256": "04a1ca9b823b9722139e674ed3c1d2a9ce865a7534d977283d9c3d6be546e422"
+    }
+  }
+}

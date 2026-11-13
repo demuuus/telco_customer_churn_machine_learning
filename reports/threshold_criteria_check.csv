@@ -1,0 +1,5 @@
+operating point,threshold,flagged,flagged %,TP,FP,FN,precision,recall,F1,precision>=0.60,F1>=0.65,expected cost
+Current (min expected cost),0.27,1637,41.5061,849,788,204,0.5186,0.8063,0.6312,False,False,827495.1
+Max F1,0.33,1406,35.6491,781,625,272,0.5555,0.7417,0.6352,False,False,829030.59
+Lowest threshold with precision >= 0.60,0.41,1103,27.9665,670,433,383,0.6074,0.6363,0.6215,True,False,834294.75
+Default,0.5,813,20.6136,536,277,517,0.6593,0.509,0.5745,True,False,850144.25
