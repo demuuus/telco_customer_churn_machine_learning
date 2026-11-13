@@ -19,7 +19,6 @@ About one customer in four in the data has churned. A customer-success team that
 3. Produce probability estimates that rank customers by risk and are reasonably calibrated.
 4. Choose a decision threshold by explicit reasoning about missed churners versus unnecessary offers.
 5. Report, under clearly stated assumptions, how the resulting contact strategy compares with contacting no one or everyone.
-6. Check how sensitive the validation results are to identical customer profiles appearing on both sides of a split.
 
 The original success targets (`notes.md`, Section 1.6) were recall ≥ 80%, precision ≥ 60%, F1 ≥ 65% and ROC-AUC ≥ 80%.
 
@@ -85,7 +84,6 @@ The cleaned and split datasets are exported to `data/processed/` by notebook `00
 - **Metrics.** PR-AUC (primary, threshold-independent), ROC-AUC and Brier score; accuracy, precision, recall and F1 depend on the threshold.
 - **Leakage control.** EDA, feature decisions, tuning, model selection and threshold selection used the training set only. The test set was scored once for the final evaluation in notebook `09`.
 - **Known deviations.** The preprocessing choices of notebook `00` were made with ordinary cross-validation on the same training folds later used as outer folds. A fully nested re-check for Logistic Regression (notebook `08`, Section 6) changed mean PR-AUC from 0.666 to 0.665; the tree and boosting models were not re-checked. The test set was also scored by two earlier pipeline versions before the final evaluation; no decision used those scores, but the holdout is not perfectly fresh.
-- **Group-aware sensitivity analysis.** Notebook `10` repeats the nested cross-validation with folds that keep identical feature profiles together ([Section 11](#11-model-evaluation)).
 
 ## 8. Models Evaluated
 
@@ -152,8 +150,6 @@ Confusion matrix (threshold 0.27): TP 213, FN 50, FP 200, TN 523. The model flag
 
 **Targets.** Recall (0.810) and ROC-AUC (0.854) meet their targets (the recall interval includes values below 0.80). Precision (0.516 versus 0.60) and F1 (0.630 versus 0.65) do not. These are properties of the precision–recall trade-off rather than of the threshold: on the training OOF predictions, the best precision at recall ≥ 0.80 is 0.522, keeping precision ≥ 0.60 limits recall to 0.649, and the maximum F1 at any threshold is 0.637 (0.635 on the 0.01 threshold grid; the six models range from 0.625 to 0.645). No threshold of any of the six models satisfies the precision and F1 targets together (notebook `08`, Section 5.4; `reports/threshold_criteria_check.csv` covers Logistic Regression only). When flagging the same 41.5% of training customers, Random Forest, HistGradientBoosting, XGBoost and LightGBM also flag 91–94% of Logistic Regression's false positives, which points to the information in the ten features rather than to the choice of algorithm. These are training-set (OOF) analyses, not test-set results.
 
-**Sensitivity to identical profiles (notebook `10`, [report](reports/group_aware_sensitivity_analysis.md)).** The dataset has no customer identifier, so identical feature profiles may be one customer or several. 34 of the 986 test rows (3.4%) share a profile with a training row, and 2.3–3.0% of validation rows in the original cross-validation do. With folds that keep identical profiles together, mean nested PR-AUC changes by −0.008 to +0.001 across the six models (Logistic Regression: 0.666 to 0.665), with ROC-AUC and Brier score essentially unchanged and the model ranking largely preserved. These differences are small compared with the fold-to-fold standard deviation and comparable to fold-assignment noise, so the evidence suggests, but does not prove, at most a very small optimistic effect. The analysis used the training set only and did not alter any earlier result.
-
 ## 12. Business Interpretation
 
 The figures below are **illustrative cost estimates** on the 986 test customers under the assumptions listed in [Section 10](#10-threshold-selection). They measure expected revenue at risk plus offer spend, not profit, and they are not realised savings.
@@ -171,13 +167,13 @@ Segment results in notebook `09` (for example, recall of 0.91 for month-to-month
 ## 13. Reproducibility Notes
 
 - `RANDOM_STATE = 34` is used for the split, the cross-validation splitters, the models, permutation importance and the bootstrap.
-- Notebooks `00`–`09` were executed in a fresh kernel by the authors; their saved outputs come from that run. Notebook `10` was executed in a fresh kernel with the pinned environment of this repository.
+- Notebooks `00`–`09` were executed in a fresh kernel by the authors; their saved outputs come from that run.
 - The deployed model `models/churn_pipeline.pkl` is refitted on all 4,930 labelled customers with the hyper-parameters and threshold fixed on the training set. It therefore has no unseen data left, and **its performance on `data_test.csv` must not be reported as a test result**. The test figures above belong to the training-only pipeline.
 
 ## 14. Project Limitations
 
 - **No temporal information.** The data contain no timestamps, observation window or churn dates, and `tenure` is measured together with the churn label. The project therefore cannot establish that the model predicts churn *before* it occurs. Prospective prediction requires temporal validation on data collected with a defined prediction date and outcome window. The model should be read as a classifier of churn status from historical customer attributes.
-- **No customer identifier.** Identical feature profiles may or may not be the same customer. 39 profiles (98 rows) carry both churn labels, so identical inputs have different outcomes. See notebook `10`.
+- **No customer identifier.** Identical feature profiles may or may not be the same customer.
 - **Internal validation only.** One split of one dataset; no external validation. The test set was scored by earlier pipeline versions before the final evaluation.
 - **Targets not met.** Precision and F1 targets were not achieved ([Section 11](#11-model-evaluation)).
 - **Limited features.** Ten attributes, with no usage, complaint, payment or contract-end data. Six algorithms reach the same ceiling (PR-AUC about 0.665). Whether additional behavioural data would help has not been tested.
@@ -214,8 +210,7 @@ Segment results in notebook `09` (for example, recall of 0.91 for month-to-month
 │   ├── 06_lightgbm.ipynb
 │   ├── 07_smote_comparison.ipynb
 │   ├── 08_model_comparison_and_selection.ipynb
-│   ├── 09_final_evaluation_and_business_analysis.ipynb
-│   └── 10_group_aware_sensitivity_analysis.ipynb
+│   └── 09_final_evaluation_and_business_analysis.ipynb
 ├── src/
 │   ├── __init__.py
 │   ├── data_preprocessing.py
@@ -228,8 +223,6 @@ Segment results in notebook `09` (for example, recall of 0.91 for month-to-month
 │   └── model_metadata.json
 ├── reports/
 │   ├── experiment_comparison.csv
-│   ├── group_aware_fold_metrics.csv
-│   ├── group_aware_sensitivity_analysis.md
 │   ├── model_selection.json
 │   ├── threshold_criteria_check.csv
 │   ├── cv_results/                  Saved nested-CV results of notebooks 01-07
@@ -237,7 +230,7 @@ Segment results in notebook `09` (for example, recall of 0.91 for month-to-month
 └── tests/
 ```
 
-Links: [notebooks](notebooks/), [sensitivity report](reports/group_aware_sensitivity_analysis.md), [model metadata](models/model_metadata.json), [planning notes](notes.md).
+Links: [notebooks](notebooks/), [model metadata](models/model_metadata.json), [planning notes](notes.md).
 
 ## 16. Installation and Environment Setup
 
@@ -256,9 +249,9 @@ For model inference only, `pip install -r requirements-inference.txt` and `pip i
 
 Run the notebooks in order from the repository root (each locates the project root itself):
 
-1. `00` (independent). 2. `01`–`07` (independent of each other; each saves results to `reports/cv_results/`). 3. `08` (reads `01`–`07`). 4. `09` (reads the selection and **rewrites `models/`**). 5. `10` (sensitivity analysis; reads the saved results of `01`–`06`; about 10 minutes on two CPU cores).
+1. `00` (independent). 2. `01`–`07` (independent of each other; each saves results to `reports/cv_results/`). 3. `08` (reads `01`–`07`). 4. `09` (reads the selection and **rewrites `models/`**).
 
-Notebooks `09` and `10` overwrite files in `models/` and `reports/`; work on a copy if the committed results should be kept. Notebooks `00`–`09` need about 7 minutes on a 16-core machine.
+Notebook `09` overwrites files in `models/` and `reports/`; work on a copy if the committed results should be kept. Notebooks `00`–`09` need about 7 minutes on a 16-core machine.
 
 Run the tests with:
 
