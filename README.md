@@ -1,6 +1,6 @@
 <h1>Telco Customer Churn Prediction</h1>
 
-Capstone Project, Module 3 (Machine Learning) — Reyner Elazaro Tampubolon and Demas Fadel Anggara
+Author: Reyner Elazaro Tampubolon and Demas Fadel Anggara
 
 ## 1. Project Overview
 
